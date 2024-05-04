@@ -3,7 +3,12 @@ package com.example.foodmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import com.example.foodmap.databinding.ActivityMainBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -12,35 +17,17 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        changeFragment(HomeFragment())
-//смена фрагментов
-        binding.bottomNavView.setOnItemSelectedListener {
-            when (it.itemId){
-                R.id.home ->{
-                    changeFragment(HomeFragment())
-                }
-                R.id.favorite ->{
-                    changeFragment(FavoriteFragment())
-                }
-                R.id.search ->{
-                    changeFragment(SearchFragment())
-                }
-                R.id.history ->{
-                    changeFragment(HistoryFragment())
-                }
-                R.id.profile ->{
-                    changeFragment(ProfileFragment())
-                }
-            }
-            return@setOnItemSelectedListener true
-        }
-    }
+        val navView = binding.bottomNavigationView
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main)!! as NavHostFragment
+        val navController = navHostFragment.navController
 
-    //изменение фрагментов от bottomnav
-    fun changeFragment(fragment: Fragment){
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragment_container, fragment)
-        fragmentTransaction.commit()
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.home, R.id.favorite, R.id.search, R.id.history, R.id.profile
+            )
+        )
+
+        navView.setupWithNavController(navController)
     }
 }
